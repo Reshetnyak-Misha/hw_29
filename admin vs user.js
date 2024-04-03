@@ -5,7 +5,7 @@ function User(username, email) {
 }
 
 
-User.prototype.login = function(system) {
+User.prototype.login = (system) => {
     if (system.users[this.username] && !this.loggedIn) {// Проверяем есть ли вообще что-то в username и false ли в логине
         system.addOnlineUser(this.username);
         this.loggedIn = true;
@@ -16,13 +16,13 @@ User.prototype.login = function(system) {
     return false;
 };
 
-User.prototype.logout = function(system) {
+User.prototype.logout = (system) => {
     system.removeOnlineUser(this.username);
     this.loggedIn = false;
     console.log(`${this.username} вышел из системы.`);
 };
 
-Object.setPrototypeOf(User.prototype,System.prototype);
+Object.setPrototypeOf(User.prototype, System.prototype);
 
 function System() {
     this.users = {};
@@ -30,8 +30,7 @@ function System() {
 }
 
 
-
-System.prototype.addUser = function(user) {
+System.prototype.addUser = (user) => {
     if (!this.users[user.username]) {
         this.users[user.username] = user;
         return true;
@@ -40,7 +39,7 @@ System.prototype.addUser = function(user) {
 };
 
 
-System.prototype.removeUser = function(username) {
+System.prototype.removeUser = (username) => {
     if (this.users[username] && username !== 'Admin') {  // Не придумал ничего умнее чтоб понять что пользователь Админ
         delete this.users[username];
         delete this.onlineUsers[username];
@@ -49,20 +48,20 @@ System.prototype.removeUser = function(username) {
     return false;
 };
 
-System.prototype.addOnlineUser = function(username) {
+System.prototype.addOnlineUser = (username) => {
     this.onlineUsers[username] = true;
 };
 
-System.prototype.removeOnlineUser = function(username) {
+System.prototype.removeOnlineUser = (username) => {
     delete this.onlineUsers[username];
 };
 
 
-System.prototype.getOnlineUsers = function() {
+System.prototype.getOnlineUsers = () => {
     return Object.keys(this.onlineUsers);
 };
 
-System.prototype.getUser = function(username) {
+System.prototype.getUser = (username) => {
     return this.users[username];  //
 };
 
@@ -71,10 +70,10 @@ function Admin(username, email) {
     this.email = email;
 }
 
-Object.setPrototypeOf(Admin.prototype,new User());
+Object.setPrototypeOf(Admin.prototype, new User());
 Admin.prototype = new User();
 
-Admin.prototype.removeUser = function(system, username) {
+Admin.prototype.removeUser = (system, username) => {
     if (this.loggedIn && username !== 'Admin') {
         if (system.removeUser(username)) {
             console.log(`Пользователь ${username} был удален.`);
@@ -105,8 +104,8 @@ admin.login(system);
 
 admin.removeUser(system, 'user1');
 console.log('Онлайн пользователи:', system.getOnlineUsers());
-console.log('Пользователь',system.getUser('Admin'))
+console.log('Пользователь', system.getUser('Admin'))
 user1.logout(system);
 user2.logout(system);
 admin.logout(system);
-console.log('Пользователь',system.getUser('Admin'))
+console.log('Пользователь', system.getUser('Admin'))
